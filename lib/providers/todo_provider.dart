@@ -32,8 +32,11 @@ class TodoProvider with ChangeNotifier{
      _works.add(todo);
      notifyListeners();
   }
-  void updateWork(String id,String title,int importance,DateTime expiryDate,TimeOfDay expiryTime){
-
+  void updateWork(String? id,String title,int importance,DateTime expiryDate,TimeOfDay expiryTime){
+    if(id==null)return ;
+     deleteWork(id);
+    addWork(id,title,importance,expiryDate,expiryTime);
+    notifyListeners();
   }
   void deleteWork(String ? _todoId){
     _works.removeWhere((todo) => todo.id == _todoId);

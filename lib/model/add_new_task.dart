@@ -4,19 +4,33 @@ import 'package:intl/intl.dart';
 import 'package:todo/providers/todo_provider.dart';
 import 'package:provider/provider.dart';
 class AddNewTask extends StatefulWidget {
-  const AddNewTask({Key? key}) : super(key: key);
 
+  UserTodo? _todo;
+  AddNewTask(this._todo);
   @override
   _AddNewTaskState createState() => _AddNewTaskState();
 }
 
 class _AddNewTaskState extends State<AddNewTask> {
+
+  bool isInit=false;
   final TextEditingController _titleController=TextEditingController();
   final _formKey = GlobalKey<FormState>();
   int ?_selectedImportance=100;
   DateTime? _selectedDate = DateTime.now();
   TimeOfDay? _selectedTime = TimeOfDay.now();
-
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    if(!isInit && widget._todo!=null){
+      isInit=true;
+      _selectedImportance=widget._todo!.importance;
+      _selectedTime=widget._todo!.expiryTime;
+      _selectedDate=widget._todo!.expiryDate;
+      _titleController.text=widget._todo!.title!;
+    }
+    super.didChangeDependencies();
+  }
   Future<void> _showInputDate(BuildContext context) async {
     DateTime? date   = await showDatePicker(
         context: context,
@@ -51,15 +65,21 @@ class _AddNewTaskState extends State<AddNewTask> {
             Navigator.of(context).pop();
           },child:Text("Okay!!"))
         ],
-        title: Text("message"),
+        title: Text(message),
       );
     },);
   }
   void _saveUserData(BuildContext ctx){
     if(!_formKey.currentState!.validate())return ;
     if( _selectedImportance==null || _selectedDate==null || _selectedTime==null)return ;
-    Provider.of<TodoProvider>(context,listen:false).
-    addWork(DateTime.now().toString(),_titleController.text , _selectedImportance!,_selectedDate!,_selectedTime!);
+    if(widget._todo==null){
+      Provider.of<TodoProvider>(context,listen:false).
+      addWork(DateTime.now().toString(),_titleController.text , _selectedImportance!,_selectedDate!,_selectedTime!);
+    }
+    else{
+      Provider.of<TodoProvider>(context,listen:false).
+      updateWork(widget._todo!.id,_titleController.text , _selectedImportance!,_selectedDate!,_selectedTime!);
+    }
     Navigator.of(context).pop();
   }
   @override
@@ -74,7 +94,7 @@ class _AddNewTaskState extends State<AddNewTask> {
                   child: Container(
                     padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(border: Border.all(color: Colors.purple)),
-                      child: Text("Add a New Task", style: TextStyle(fontSize: 18))),
+                      child:widget._todo!=null ?Text("Edit Your Task", style: TextStyle(fontSize: 18))  : Text("Add a New Task", style: TextStyle(fontSize: 18))),
                 ),
                 Flexible(
                   fit:FlexFit.loose,
@@ -89,7 +109,7 @@ class _AddNewTaskState extends State<AddNewTask> {
                         ),
                         controller: _titleController,
                         validator: (String ?val){
-                          if(val==null )return "Enter a Name For Your Task";
+                          if(val==null || val.length==0)return "Enter a Name For Your Task";
                           return null;
                         },
                       ),

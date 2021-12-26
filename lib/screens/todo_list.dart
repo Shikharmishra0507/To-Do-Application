@@ -19,7 +19,7 @@ class _TodoListState extends State<TodoList> {
     await showModalBottomSheet(
       context: context,
       builder: (BuildContext ctx) {
-        return AddNewTask();
+        return AddNewTask(null);
       },
     );
   }

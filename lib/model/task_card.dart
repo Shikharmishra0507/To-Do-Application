@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:todo/model/add_new_task.dart';
 import 'package:todo/providers/todo_provider.dart';
 import 'package:provider/provider.dart';
 class TaskCard extends StatelessWidget {
@@ -7,6 +8,11 @@ class TaskCard extends StatelessWidget {
   TaskCard(this._todo);
   @override
   Widget build(BuildContext context) {
+    Future<void> showAddTaskSheet() async{
+      await showModalBottomSheet(context: context, builder: (context){
+        return AddNewTask(_todo);
+      });
+    }
     return Card(
       elevation: 2,
       child:Row(
@@ -17,7 +23,9 @@ class TaskCard extends StatelessWidget {
             flex: 5,
               child:Text(_todo.title!)),
          Expanded(child: Row(children: [
-           IconButton(onPressed: (){}, icon: Icon(Icons.edit)),
+           IconButton(onPressed: (){
+             showAddTaskSheet();
+           }, icon: Icon(Icons.edit)),
            IconButton(onPressed: (){
              Provider.of<TodoProvider>(context,listen: false).deleteWork(_todo.id);
            }, icon: Icon(Icons.delete))
