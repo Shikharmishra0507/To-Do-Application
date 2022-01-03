@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:todo/model/add_new_task.dart';
+import 'add_new_task.dart';
 import 'package:todo/providers/todo_provider.dart';
 import 'package:provider/provider.dart';
 class TaskCard extends StatelessWidget {

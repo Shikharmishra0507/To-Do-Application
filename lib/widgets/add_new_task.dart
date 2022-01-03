@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:todo/providers/todo_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
+
 class AddNewTask extends StatefulWidget {
 
   UserTodo? _todo;
@@ -19,6 +21,7 @@ class _AddNewTaskState extends State<AddNewTask> {
   int ?_selectedImportance=100;
   DateTime? _selectedDate = DateTime.now();
   TimeOfDay? _selectedTime = TimeOfDay.now();
+  var uuid = Uuid();
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
@@ -69,16 +72,21 @@ class _AddNewTaskState extends State<AddNewTask> {
       );
     },);
   }
-  void _saveUserData(BuildContext ctx){
+  Future<void> _saveUserData(BuildContext ctx) async{
     if(!_formKey.currentState!.validate())return ;
     if( _selectedImportance==null || _selectedDate==null || _selectedTime==null)return ;
-    if(widget._todo==null){
-      Provider.of<TodoProvider>(context,listen:false).
-      addWork(DateTime.now().toString(),_titleController.text , _selectedImportance!,_selectedDate!,_selectedTime!);
-    }
-    else{
-      Provider.of<TodoProvider>(context,listen:false).
-      updateWork(widget._todo!.id,_titleController.text , _selectedImportance!,_selectedDate!,_selectedTime!);
+
+    try {
+      if(widget._todo==null){
+        await Provider.of<TodoProvider>(context,listen:false).
+        addWork(uuid.v4(),_titleController.text , _selectedImportance!,_selectedDate!,_selectedTime!);
+      }
+      else{
+        await Provider.of<TodoProvider>(context,listen:false).
+        updateWork(widget._todo!.id,_titleController.text , _selectedImportance!,_selectedDate!,_selectedTime!);
+      }
+    } on Exception catch (e) {
+      // TODO
     }
     Navigator.of(context).pop();
   }
