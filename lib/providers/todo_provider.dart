@@ -61,7 +61,7 @@ class TodoProvider with ChangeNotifier {
 
   Future<void> addWork(String id, String title, int importance, DateTime expiryDate,
       TimeOfDay expiryTime) async{
-
+    print("inside add work todoprovider");
     UserTodo todo = UserTodo(
         id: id,
         importance: importance,
@@ -81,7 +81,8 @@ class TodoProvider with ChangeNotifier {
     notifyListeners();
   }
   Future<void> getWorksFromFirebase ()async{
-      await Database().getTodoFromFirebase();
+      works =await Database().getTodoFromFirebase();
+
       notifyListeners();
   }
   Future<void> updateWork(String? id, String title, int importance, DateTime expiryDate,

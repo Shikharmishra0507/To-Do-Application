@@ -9,6 +9,7 @@ import 'dart:convert' as json;
 class Database with ChangeNotifier {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseAuth _user = FirebaseAuth.instance;
+
   Future<void> updateUserTodo() async{
     // update works list
     final todoList = TodoProvider.works.map((todo) {
@@ -50,20 +51,18 @@ class Database with ChangeNotifier {
       rethrow;
     }
   }
-  Future<void> getTodoFromFirebase() async{
+  Future<List<UserTodo>> getTodoFromFirebase() async{
     List<UserTodo>todoList=[];
-    firestore.collection('Users').doc(_user.currentUser!.uid).snapshots().map((snapshot) {
-     if(!snapshot.exists)return ;
 
-     Map<String, dynamic> data = snapshot.data()! ;
-
-     data['todo'].map((todo) {
-       Map<String,dynamic>value=Map<String,dynamic>.from(todo);
-       final val= UserTodo.fromJson(value);
-       todoList.add(val);
-     }).toList();
-    });
-    TodoProvider.works=todoList;
+     DocumentSnapshot snapshot=await firestore.collection('Users').doc(_user.currentUser!.uid).get();
+    Map<String, dynamic> data = snapshot.data()! as Map<String, dynamic>;
+    data['todo'].map((todo) {
+      Map<String,dynamic>value=Map<String,dynamic>.from(todo);
+      final val= UserTodo.fromJson(value);
+      todoList.add(val);
+    }).toList();
+     return todoList;
+    //TodoProvider.works=todoList;
   }
   static UserModel? getUserModel(DocumentSnapshot snapshot) {
     String _userId = FirebaseAuth.instance.currentUser!.uid;

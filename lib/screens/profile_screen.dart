@@ -7,18 +7,20 @@ class ProfileScreen extends StatelessWidget {
     return Stack(
       children: [
       Container(color: Colors.black,),
-        Align(
-          alignment: Alignment.bottomCenter,
+        Positioned(
+          top: MediaQuery.of(context).size.height*0.2,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height*0.8,
           child: Container(
-            height: MediaQuery.of(context).size.height*0.75,
 
-              color:Colors.blue),
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: CircleAvatar(
-            child: ColoredBox(color: Colors.black,),
-          ),
+            color:Colors.blue),),
+        Positioned(
+          right: MediaQuery.of(context).size.width*0.5,
+            top: MediaQuery.of(context).size.height*0.15,
+            height: 200,
+            width: 200,
+            child: CircleAvatar(
+          child: ColoredBox(color: Colors.black,),)
         )
     ],);
   }
