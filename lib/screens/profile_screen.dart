@@ -15,12 +15,13 @@ class ProfileScreen extends StatelessWidget {
 
             color:Colors.blue),),
         Positioned(
-          right: MediaQuery.of(context).size.width*0.5,
+
+          right: MediaQuery.of(context).size.width*0.4,
             top: MediaQuery.of(context).size.height*0.15,
             height: 200,
             width: 200,
             child: CircleAvatar(
-          child: ColoredBox(color: Colors.black,),)
+          child: Icon(Icons.supervised_user_circle),)
         )
     ],);
   }
